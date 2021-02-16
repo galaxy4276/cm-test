@@ -1,34 +1,47 @@
 import fs from "fs";
 import {dbPath} from "./config/path";
 
-export const addUserToJSON = async (req, res, next) => {
+export const addUser = async (req, res, next) => {
   try {
-    const newUser = await addUserJSONPromise(req.body);
-
+    const newUser = await addUserJSON(req.body);
     // 로딩효과를 주기위한 delay
     setTimeout(() => {
       return res.status(201).json(newUser);
     }, 1000);
   } catch (e) {
     console.log(e);
-    next(e);
-    return res.status(500).send('서버가 응답하지 않습니다.');
+    return next(e);
   }
 };
 
 export const getUsers = async (req, res, next) => {
   try {
-    const lists = await getJSONPromise();
+    const lists = await getJSON();
     return res.status(200).json(lists);
   } catch (e) {
     console.log(e);
-    return res.status(500).send('서버가 응답하지 않습니다.');
+    return next(e);
+  }
+};
+
+export const deleteUsers = async (req, res, next) => {
+  try {
+    console.log(`req.body:`, req.body);
+    await deleteUserJSON(req.body);
+    // 로딩효과를 주기위한 delay
+    setTimeout(() => {
+      return res.status(200).send('OK');
+    }, 1200);
+  } catch (e) {
+    console.log(e);
+    return next(e);
   }
 };
 
 
-// ----------- 상단 API에 사용 될 Promise 함수 ------------
-const getJSONPromise = () =>
+
+// ----------- 상단 API 에 사용 될 Promise 함수 ------------
+const getJSON = () =>
   new Promise((resolve, reject) => {
     fs.readFile(dbPath, 'utf8', (err, data) => {
       if (err) return reject(err);
@@ -37,23 +50,61 @@ const getJSONPromise = () =>
     });
   });
 
-const addUserJSONPromise = (user) =>
+const addUserJSON = (user) =>
   new Promise((resolve, reject) => {
     fs.readFile(dbPath, 'utf8', (err, data) => {
       if (err) reject('파일 읽기 실패');
       const userList = JSON.parse(data);
-      const recentID = userList[userList.length - 1].key;
-      const newUser = {
-        key: recentID + 1,
-        ...user,
-      };
-      const resultData = JSON.stringify(userList.concat(newUser));
-      console.log(`${newUser.name} 유저가 id ${newUser.key} 번을 부여받고 ${newUser.role} 직군으로 추가되었습니다.`);
+      const recentID = userList[userList.length - 1]?.key;
 
-      fs.writeFile(dbPath, resultData, err => {
+      // 유저가 한 명도 없을 때..
+      if (!recentID) {
+        const newUser = {
+          key: 1,
+          ...user,
+        };
+        const resultData = JSON.stringify(userList.concat(newUser));
+        console.log(`${newUser.name} 유저가 id ${newUser.key} 번을 부여받고 ${newUser.role} 직군으로 추가되었습니다.`);
+        fs.writeFile(dbPath, resultData, err => {
+          if (err) reject('유저 데이터 작성 실패');
+        });
+        resolve(newUser);
+      }
+      // 유저가 한 명 이상일 때..
+      else {
+        const newUser = {
+          key: recentID + 1,
+          ...user,
+        };
+        const resultData = JSON.stringify(userList.concat(newUser));
+        console.log(`${newUser.name} 유저가 id ${newUser.key} 번을 부여받고 ${newUser.role} 직군으로 추가되었습니다.`);
+
+        fs.writeFile(dbPath, resultData, err => {
+          if (err) reject('유저 데이터 작성 실패');
+        });
+
+        resolve(newUser);
+      }
+    });
+  });
+
+const deleteUserJSON = (list) =>
+  new Promise((resolve, reject) => {
+    fs.readFile(dbPath, 'utf8', (err, data) => {
+      if (err) reject('파일 읽기 실패');
+      let userList = JSON.parse(data);
+      for (const idx of list) {
+        const findIdx = userList.findIndex(
+          item => item.id === idx
+        );
+        console.log(userList[findIdx]);
+        console.log('회원이 제거 되었습니다.');
+        userList.splice(findIdx, 1);
+      }
+      console.log('result: ', userList);
+      fs.writeFile(dbPath, JSON.stringify(userList), err => {
         if (err) reject('유저 데이터 작성 실패');
+        resolve();
       });
-
-      resolve(newUser);
     });
   });
