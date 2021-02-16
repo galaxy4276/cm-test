@@ -6,29 +6,30 @@ import {
   GET_USERS_REQUEST,
   GET_USERS_SUCCESS,
   GET_USERS_FAILURE,
+  DELETE_USERS_REQUEST,
+  DELETE_USERS_SUCCESS,
+  DELETE_USERS_FAILURE,
 } from "./index";
 import * as userAPI from '../../api/userAPI';
 
 
 // Saga 함수
-function* addUserSaga(action) {
+function* addUserSaga({ payload }) {
   try {
-    console.log(action);
-    const result = yield call(userAPI.addUserToJSON, action.payload);
-    console.log(result);
+    const result = yield call(userAPI.addUserToJSON, payload);
+    console.error(result);
     yield put({
       type: ADD_USER_SUCCESS,
       payload: result.data
     });
   } catch (e) {
-    console.log(e);
+    console.error(e);
     yield put({
       type: ADD_USER_FAILURE,
       payload: e.response.data
     });
   }
 }
-
 function* getUsersSaga() {
   try {
     const result = yield call(userAPI.getUserFromJSON);
@@ -40,7 +41,25 @@ function* getUsersSaga() {
     console.log(e);
     yield put({
       type: GET_USERS_FAILURE,
-      payload: e
+      payload: e.response.data
+    });
+  }
+}
+function* deleteUsersSaga({ payload }) {
+  try {
+    console.log('payload: ', payload);
+    yield call(userAPI.deleteUsersFromJSON, payload);
+    yield put({
+      type: DELETE_USERS_SUCCESS,
+    });
+    yield put({
+      type: GET_USERS_REQUEST
+    });
+  } catch (e) {
+    console.error(e);
+    yield put({
+      type: DELETE_USERS_FAILURE,
+      payload: e.response.data
     });
   }
 }
@@ -50,9 +69,11 @@ function* getUsersSaga() {
 function* watchAddUser() {
   yield takeLatest(ADD_USER_REQUEST, addUserSaga);
 }
-
 function* watchGetUsers() {
   yield takeLatest(GET_USERS_REQUEST, getUsersSaga);
+}
+function* watchDeleteUsers() {
+  yield takeLatest(DELETE_USERS_REQUEST, deleteUsersSaga);
 }
 
 

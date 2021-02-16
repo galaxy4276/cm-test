@@ -1,27 +1,63 @@
-import React, { useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
+import { Table } from 'antd';
+import {useDispatch, useSelector} from "react-redux";
+import styled from "styled-components";
+import {deleteUsers} from "../redux/user";
 
-const UserTable = () => {
-  const columns = useMemo(
-    () => [
-      {
-        Header: '번호',
-      },
-      {
-        Header: '이름',
-      },
-      {
-        Header: '직업'
-      },
-    ],
-    []
+const UserTable = ({ data }) => {
+  const [selectedRowKeys, setSelectedRowKeys] = useState(null);
+  const [selectionType, setSelectionType] = useState('checkbox');
+
+  const dispatch = useDispatch();
+
+  const userList = useSelector(
+    state => state.users.users
   );
 
-  return (
-    <table>
+  const onRemove = useCallback(() => {
+    dispatch(deleteUsers(selectedRowKeys));
+  }, [selectedRowKeys]);
 
-    </table>
+  const rowSelection = {
+    onChange (selectedRowKeys, selectedRow) {
+      console.log(`selectedRowKeys: ${selectedRowKeys}, ${typeof selectedRowKeys}`);
+      setSelectedRowKeys(selectedRowKeys);
+    },
+    getCheckboxProps: record => ({
+      disabled: record.name === 'Disabled User',
+      name: record.name,
+    }),
+  };
+
+  return (
+    <StyledTable
+      rowSelection={{
+        type: selectionType,
+        ...rowSelection,
+      }}
+      columns={columns}
+      dataSource={userList}
+    />
   );
 };
 
+const columns = [
+  {
+    title: '번호',
+    dataIndex: 'key',
+  },
+  {
+    title: '이름',
+    dataIndex: 'name'
+  },
+  {
+    title: '직업',
+    dataIndex: 'role'
+  },
+];
+
+const StyledTable = styled(Table)`
+  width: 50rem;
+`;
 
 export default UserTable;

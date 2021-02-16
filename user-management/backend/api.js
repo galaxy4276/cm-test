@@ -27,7 +27,7 @@ export const getUsers = async (req, res, next) => {
 };
 
 
-// ----------- Promise 함수 ------------
+// ----------- 상단 API에 사용 될 Promise 함수 ------------
 const getJSONPromise = () =>
   new Promise((resolve, reject) => {
     fs.readFile(dbPath, 'utf8', (err, data) => {
@@ -42,13 +42,13 @@ const addUserJSONPromise = (user) =>
     fs.readFile(dbPath, 'utf8', (err, data) => {
       if (err) reject('파일 읽기 실패');
       const userList = JSON.parse(data);
-      const recentID = userList[userList.length - 1].id;
+      const recentID = userList[userList.length - 1].key;
       const newUser = {
-        id: recentID + 1,
+        key: recentID + 1,
         ...user,
       };
       const resultData = JSON.stringify(userList.concat(newUser));
-      console.log(`${newUser.name} 유저가 id ${newUser.id} 번을 부여받고 ${newUser.role} 직군으로 추가되었습니다.`);
+      console.log(`${newUser.name} 유저가 id ${newUser.key} 번을 부여받고 ${newUser.role} 직군으로 추가되었습니다.`);
 
       fs.writeFile(dbPath, resultData, err => {
         if (err) reject('유저 데이터 작성 실패');

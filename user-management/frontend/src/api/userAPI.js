@@ -11,3 +11,7 @@ export const addUserToJSON = (user) => {
 export const getUserFromJSON = () => {
   return client.get('/user');
 };
+
+export const deleteUsersFromJSON = (keyLists) => {
+  return client.delete('/user', keyLists);
+}
