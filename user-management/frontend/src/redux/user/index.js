@@ -24,7 +24,10 @@ export const inputUsername = createAction(
 export const inputRole = createAction(
   INPUT_ROLE, role => role
 );
-export const deleteUsers = createAction(DELETE_USERS_REQUEST, id => id);
+export const deleteUsers = createAction(
+  DELETE_USERS_REQUEST,
+    id => id
+);
 
 
 // 상태 값
@@ -32,6 +35,7 @@ const INITIAL_STATE = {
   users: [],
   username: '',
   role: '개발자',
+
 
   // 사용자 추가 관련 상태 값
   addUserLoading: false,
