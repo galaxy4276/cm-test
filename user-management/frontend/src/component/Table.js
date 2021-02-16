@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { Table } from 'antd';
+import {Button, Table} from 'antd';
 import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {deleteUsers} from "../redux/user";
@@ -12,6 +12,9 @@ const UserTable = ({ data }) => {
 
   const userList = useSelector(
     state => state.users.users
+  );
+  const { deleteUserLoading } = useSelector(
+    state => state.users
   );
 
   const onRemove = useCallback(() => {
@@ -30,14 +33,26 @@ const UserTable = ({ data }) => {
   };
 
   return (
-    <StyledTable
-      rowSelection={{
-        type: selectionType,
-        ...rowSelection,
-      }}
-      columns={columns}
-      dataSource={userList}
-    />
+    <>
+      <div className='button__wrapper'>
+        <Button type='primary'>수정</Button>
+        <Button
+          type='primary'
+          onClick={onRemove}
+          loading={deleteUserLoading}
+        >
+          삭제
+        </Button>
+      </div>
+      <StyledTable
+        rowSelection={{
+          type: selectionType,
+          ...rowSelection,
+        }}
+        columns={columns}
+        dataSource={userList}
+      />
+    </>
   );
 };
 
