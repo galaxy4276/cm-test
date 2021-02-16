@@ -7,14 +7,16 @@ import {AiOutlineUserAdd} from 'react-icons/ai';
 import {useDispatch, useSelector} from "react-redux";
 import {addUser, inputRole, inputUsername} from "../redux/user";
 
-
 const UserAdd = () => {
-  const { username, role } = useSelector(state => state.users);
+  const { username, role, addUserLoading } = useSelector(
+    state => state.users
+  );
   const dispatch = useDispatch();
 
   const onSubmit = useCallback(e => {
     e.preventDefault();
-    dispatch(addUser({ username, role }));
+    dispatch(addUser({ name: username, role }));
+    // dispatch(inputUsername(''));
   }, [dispatch, username, role]);
 
   const onChangeInput = useCallback(e => {
@@ -65,6 +67,7 @@ const UserAdd = () => {
               htmlType='submit'
               size='large'
               onClick={onSubmit}
+              loading={addUserLoading}
             >
               추가
             </StyledButton>
