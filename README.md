@@ -10,5 +10,5 @@
 * https://elated-hugle-b2c4b2.netlify.app/
 
 2. user-management
-* http://3.34.31.243:3000/
-* 수정기능을 완성하지 못했습니다.
+* backend 에서 서버를 먼저 실행시켜야합니다.
+npm install -> npm start 이후 frontend 에서 npm start
