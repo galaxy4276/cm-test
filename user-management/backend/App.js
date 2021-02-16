@@ -1,7 +1,7 @@
 import express from 'express';
 import * as API from './api';
 import logger from 'morgan';
-import {getUsers} from './api';
+import {addUser, getUsers, deleteUsers} from './api';
 import cors from 'cors';
 
 const app = express();
@@ -12,7 +12,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.get('/user', getUsers);
-app.post('/user', API.addUserToJSON);
+app.post('/user', addUser);
+app.delete('/user', deleteUsers);
 
 
 app.listen(8001, () => {
