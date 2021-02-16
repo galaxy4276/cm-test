@@ -10,11 +10,11 @@ const Input = () => {
 
   const onChange = useCallback(e => {
     dispatch(todoInput(e.target.value));
-  }, []);
+  }, [dispatch]);
 
   const onReset = useCallback(() => {
     dispatch(getReset());
-  }, []);
+  }, [dispatch]);
 
   const onSubmit = (e) => {
     e.preventDefault();
