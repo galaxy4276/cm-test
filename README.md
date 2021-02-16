@@ -4,3 +4,11 @@
 
 
 #### 2번 내용 기능을 완성하지 못했습니다.
+
+## 외부 경로
+1. todolist
+* https://elated-hugle-b2c4b2.netlify.app/
+
+2. user-management
+* http://3.34.31.243:3000/
+* 수정기능을 완성하지 못했습니다.
