@@ -19,6 +19,8 @@ const UserTable = ({ data }) => {
   );
 
   const onRemove = useCallback(() => {
+    if (!selectedRowKeys)
+      return alert('항목을 선택하세요.');
     dispatch(deleteUsers(selectedRowKeys));
   }, [selectedRowKeys]);
 
