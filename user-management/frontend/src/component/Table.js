@@ -4,10 +4,11 @@ import {useDispatch, useSelector} from "react-redux";
 import styled from "styled-components";
 import {deleteUsers} from "../redux/user";
 
+
+// 테이블 데이터 (row) 수정 기능이 미구현 되었습니다.
 const UserTable = ({ data }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState(null);
   const [selectionType, setSelectionType] = useState('checkbox');
-
   const dispatch = useDispatch();
 
   const userList = useSelector(
@@ -22,14 +23,15 @@ const UserTable = ({ data }) => {
   }, [selectedRowKeys]);
 
   const rowSelection = {
-    onChange (selectedRowKeys, selectedRow) {
-      console.log(`selectedRowKeys: ${selectedRowKeys}, ${typeof selectedRowKeys}`);
+    onChange (selectedRowKeys) {
       setSelectedRowKeys(selectedRowKeys);
     },
-    getCheckboxProps: record => ({
-      disabled: record.name === 'Disabled User',
-      name: record.name,
-    }),
+    // 구현 하지 못함 ( 체크박스 선택 Props )
+    getCheckboxProps: record => {
+      return {
+        name: record.name,
+      };
+    }
   };
 
   return (
@@ -60,14 +62,31 @@ const columns = [
   {
     title: '번호',
     dataIndex: 'key',
+    sorter: (a, b) => a.key - b.key,
   },
   {
     title: '이름',
-    dataIndex: 'name'
+    dataIndex: 'name',
   },
   {
     title: '직업',
-    dataIndex: 'role'
+    dataIndex: 'role',
+    filters: [
+      {
+        text: '개발자',
+        value: '개발자',
+      },
+      {
+        text: '디자이너',
+        value: '디자이너',
+      },
+      {
+        text: '기획자',
+        value: '기획자',
+      },
+    ],
+    filterMultiple: false,
+    onFilter: (value, record) => record.role.indexOf(value) === 0,
   },
 ];
 

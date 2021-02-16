@@ -36,8 +36,7 @@ const INITIAL_STATE = {
   username: '',
   role: '개발자',
 
-
-  // 사용자 추가 관련 상태 값
+  // 사용자 요청관련 상태 값
   addUserLoading: false,
   addUserError: null,
 

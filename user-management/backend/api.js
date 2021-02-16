@@ -1,6 +1,9 @@
 import fs from "fs";
 import {dbPath} from "./config/path";
 
+/**
+ * @POST 사용자 추가
+ */
 export const addUser = async (req, res, next) => {
   try {
     const newUser = await addUserJSON(req.body);
@@ -14,9 +17,12 @@ export const addUser = async (req, res, next) => {
   }
 };
 
+/**
+ * @GET 사용자 전체 목록 불러오기
+ */
 export const getUsers = async (req, res, next) => {
   try {
-    const lists = await getJSON();
+    const lists = await getUsersJSON();
     return res.status(200).json(lists);
   } catch (e) {
     console.log(e);
@@ -24,10 +30,12 @@ export const getUsers = async (req, res, next) => {
   }
 };
 
+/***
+ * @DELETE 사용자 or 사용자 목록 삭제하기
+ */
 export const deleteUsers = async (req, res, next) => {
   try {
-    console.log(`req.body:`, req.body);
-    await deleteUserJSON(req.body);
+    await deleteUsersJSON(req.body);
     // 로딩효과를 주기위한 delay
     setTimeout(() => {
       return res.status(200).send('OK');
@@ -39,9 +47,8 @@ export const deleteUsers = async (req, res, next) => {
 };
 
 
-
 // ----------- 상단 API 에 사용 될 Promise 함수 ------------
-const getJSON = () =>
+const getUsersJSON = () =>
   new Promise((resolve, reject) => {
     fs.readFile(dbPath, 'utf8', (err, data) => {
       if (err) return reject(err);
@@ -88,20 +95,23 @@ const addUserJSON = (user) =>
     });
   });
 
-const deleteUserJSON = (list) =>
+const deleteUsersJSON = (list) =>
   new Promise((resolve, reject) => {
     fs.readFile(dbPath, 'utf8', (err, data) => {
       if (err) reject('파일 읽기 실패');
       let userList = JSON.parse(data);
       for (const idx of list) {
         const findIdx = userList.findIndex(
-          item => item.id === idx
+          item => {
+            return item.key === idx
+          }
         );
-        console.log(userList[findIdx]);
-        console.log('회원이 제거 되었습니다.');
+        const findUser = userList[findIdx];
+        console.log(
+          `${findUser.key} 번호 ${findUser.name} 회원이 제거 되었습니다.
+          `);
         userList.splice(findIdx, 1);
       }
-      console.log('result: ', userList);
       fs.writeFile(dbPath, JSON.stringify(userList), err => {
         if (err) reject('유저 데이터 작성 실패');
         resolve();

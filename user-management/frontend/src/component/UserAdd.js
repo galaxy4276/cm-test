@@ -15,17 +15,20 @@ const UserAdd = () => {
 
   const onSubmit = useCallback(e => {
     e.preventDefault();
+    if (username.trim().length === 0)
+      return alert('내용을 입력하세요.');
     dispatch(addUser({ name: username, role }));
+    // TODO!: 상태값을 비워도 뷰에 반영이 안 됨.
     // dispatch(inputUsername(''));
-  }, [dispatch, username, role]);
+  }, [username, role]);
 
   const onChangeInput = useCallback(e => {
     dispatch(inputUsername(e.target.value));
-  }, [dispatch, username]);
+  }, [username]);
 
   const onChangeRole = useCallback(e => {
     dispatch(inputRole(e));
-  }, [dispatch, role]);
+  }, [role]);
 
   return (
     <StyledContentWrapper>
@@ -39,11 +42,12 @@ const UserAdd = () => {
           >
             <Input
               size='large'
+              id='input-name'
+              value={username}
               prefix={<BiUser />}
               placeholder='사용자 이름을 입력하세요.'
               style={{ width: '30rem' }}
               maxLength={10}
-              value={username}
               onChange={onChangeInput}
             />
           </Form.Item>
