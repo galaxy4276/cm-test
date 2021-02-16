@@ -47,8 +47,7 @@ function* getUsersSaga() {
 }
 function* deleteUsersSaga({ payload }) {
   try {
-    console.log('payload: ', payload);
-    yield call(userAPI.deleteUsersFromJSON, payload);
+    yield call(userAPI.deleteUsersToJSON, payload);
     yield put({
       type: DELETE_USERS_SUCCESS,
     });
@@ -82,6 +81,7 @@ function* userSaga() {
   yield all([
     watchAddUser(),
     watchGetUsers(),
+    watchDeleteUsers(),
   ]);
 }
 
