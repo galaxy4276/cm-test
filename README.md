@@ -10,5 +10,4 @@
 * https://elated-hugle-b2c4b2.netlify.app/
 
 2. user-management
-* backend 에서 서버를 먼저 실행시켜야합니다.
-npm install -> npm start 이후 frontend 에서 npm start
+* http://3.34.31.243:8001/
