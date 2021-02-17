@@ -6,7 +6,7 @@ import {deleteUsers} from "../redux/user";
 
 
 // 테이블 데이터 (row) 수정 기능이 미구현 되었습니다.
-const UserTable = ({ data }) => {
+const UserTable = () => {
   const [selectedRowKeys, setSelectedRowKeys] = useState(null);
   const [selectionType, setSelectionType] = useState('checkbox');
   const dispatch = useDispatch();
